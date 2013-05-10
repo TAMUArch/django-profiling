@@ -18,7 +18,7 @@ log = getLogger('dprofiling.middleware')
 
 
 BACKEND = getattr(settings, 'PROFILING_BACKEND',
-    'dprofiling.output.db.DatabaseBackend')
+    'dprofiling.backends.db.DatabaseBackend')
 if isinstance(BACKEND, six.string_types):
     _module, _class = BACKEND.rsplit('.', 1)
     _module = import_module(_module)
