@@ -34,16 +34,16 @@ class ProfilingRequestMiddleware(object):
         
         count = ProfileStats.on_site.get(path=request.path, active=True).count()
 
+        request._profiling_enabled = False
         if count == 1:
             request._profiling_enabled = True
-        else:
-            if count > 1:
-                log.error('Multiple profile stats active for the requested url')
-            request._profiling_enabled = False
+        elif count > 1:
+            log.error('Multiple profile stats active for the requested url')
         return request._profiling_enabled
 
     def process_request(self, request):
         if self.enabled(request):
+            log.debug('Enabling profiling on %s' % (request.path,))
             request._profile = Profile()
             request._profile.enable()
         return None
@@ -51,7 +51,9 @@ class ProfilingRequestMiddleware(object):
     def process_response(self, request, response):
         if self.enabled(request):
             request._profile.disable()
+            log.debug('Finished profiling of %s' % (request.path,))
             BACKEND.store(request._profile)
+            log.debug('Profile information stored for %s' % (request.path,))
 
         return response
 
