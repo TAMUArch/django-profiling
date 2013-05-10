@@ -32,7 +32,7 @@ class ProfilingRequestMiddleware(object):
         if hasattr(request, '_profiling_enabled'):
             return request._profiling_enabled
         
-        count = ProfileStats.on_site.get(path=request.path, active=True).count()
+        count = ProfileStats.on_site.filter(path=request.path, active=True).count()
 
         request._profiling_enabled = False
         if count == 1:
@@ -52,7 +52,7 @@ class ProfilingRequestMiddleware(object):
         if self.enabled(request):
             request._profile.disable()
             log.debug('Finished profiling of %s' % (request.path,))
-            BACKEND.store(request._profile)
+            BACKEND.store(request.path, request._profile)
             log.debug('Profile information stored for %s' % (request.path,))
 
         return response
