@@ -14,6 +14,7 @@ def upload_profile(instance, filename):
             time.time(),)
 
 class ProfileStats(models.Model):
+    name = models.CharField(max_length=255, null=False, blank=False)
     path = models.URLField(null=False, blank=False, db_index=True)
     site = models.ForeignKey(Site, null=False, blank=False, db_index=True)
     active = models.BooleanField(default=False, null=False, blank=False,
