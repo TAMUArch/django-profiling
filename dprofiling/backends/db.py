@@ -5,7 +5,7 @@ from tempfile import mkstemp
 from django.core.exceptions import MultipleObjectsReturned
 from django.core.files import File
 
-from dprofiling.models import ProfileStats, Profile
+from dprofiling.models import Session, Profile
 
 
 
@@ -19,16 +19,16 @@ class DatabaseBackend(object):
     def store(self, path, profile):
         temp = None
         try:
-            stats = ProfileStats.on_site.get(path=path, active=True)
-        except ProfileStats.DoesNotExist, MultipleObjectsReturned:
-            log.exception('Error retrieving the profile stats object for %s' %
+            session = Session.on_site.get(path=path, active=True)
+        except Session.DoesNotExist, MultipleObjectsReturned:
+            log.exception('Error retrieving the profiling session object for %s' %
                     (path,))
         try:
             temp = mkstemp(dir=self.tempdir)
             log.debug('Temporary file created: %s' % (temp.name,))
             profile.dump_stats(temp.name)
             log.debug('Profile information dumped to temporary file')
-            stored_profile = Profile(stats=stats, dump=File(temp))
+            stored_profile = Profile(session=session, dump=File(temp))
             stored_profile.save()
             log.debug('Profile %d created' % (stored_profile.pk,))
         finally:
@@ -36,5 +36,3 @@ class DatabaseBackend(object):
                 temp.close()
                 unlink(temp.name)
 
-
-        

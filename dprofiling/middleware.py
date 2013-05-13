@@ -10,7 +10,7 @@ from django.core.exceptions import MultipleObjectsReturned
 from django.utils import six
 
 
-from dprofiling.models import ProfileStats
+from dprofiling.models import Session
 
 
 log = getLogger('dprofiling.middleware')
@@ -31,8 +31,8 @@ class ProfilingRequestMiddleware(object):
     def enabled(self, request):
         if hasattr(request, '_profiling_enabled'):
             return request._profiling_enabled
-        
-        count = ProfileStats.on_site.filter(path=request.path, active=True).count()
+
+        count = Session.on_site.filter(path=request.path, active=True).count()
 
         request._profiling_enabled = False
         if count == 1:
