@@ -1,3 +1,5 @@
+from logging import getLogger
+
 import time
 
 from django.conf import settings
@@ -7,6 +9,9 @@ from django.contrib.sites.models import Site
 from django.contrib.sites.managers import CurrentSiteManager
 from django.utils.http import urlquote
 
+
+
+log = getLogger('dprofiling.models')
 
 
 def upload_profile(instance, filename):
@@ -27,9 +32,7 @@ class Session(models.Model):
 class Profile(models.Model):
     session = models.ForeignKey(Session, null=False, blank=False,
             db_index=True)
-    dump = models.FileField(null=False, blank=False, max_lenth=255,
-            upload_to=getattr('PROFILING_PROFILE_UPLOAD_TO', upload_profile),
-            storage=getattr('PROFILING_PROFILE_STORAGE', None))
-
-
+    dump = models.FileField(null=False, blank=False, max_length=255,
+            upload_to=getattr(settings, 'PROFILING_PROFILE_UPLOAD_TO', upload_profile),
+            storage=getattr(settings, 'PROFILING_PROFILE_STORAGE', None))
 
