@@ -56,6 +56,8 @@ class ProfilingRequestMiddleware(object):
             log.debug('Finished profiling of %s' % (request.path,))
             self.backend.store(request.path, request._profile)
             log.debug('Profile information stored for %s' % (request.path,))
+            response.profile = request._profile
+            log.debug('Profile information added to the response')
 
         return response
 
