@@ -20,7 +20,7 @@ class DatabaseBackend(object):
         temp = None
         try:
             session = Session.on_site.get(path=path, active=True)
-        except Session.DoesNotExist, MultipleObjectsReturned as e:
+        except (Session.DoesNotExist, MultipleObjectsReturned) as e:
             log.exception('Error retrieving the profiling session object for %s' %
                     (path,))
         try:
