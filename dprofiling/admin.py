@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.conf.urls import patterns, url
 from django.contrib.admin import helpers
 from django.contrib.admin.util import unquote
+from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponse
 from django.template.response import TemplateResponse
 
@@ -11,7 +12,19 @@ from dprofiling.backends import get_backend
 
 
 
+
+
 class SessionAdmin(admin.ModelAdmin):
+    list_display = ('name', 'path', 'active', 'stats_link')
+    list_filter = ('active',)
+
+    def stats_link(self, obj):
+        return '<a href="%s">Stats</a>' % (reverse('admin:dprofiling_session_stats',
+            args=(obj.pk,)),)
+
+    stats_link.allow_tags = True
+    stats_link.short_description = 'Cumulative Stats'
+
     def get_urls(self):
         urls = super(SessionAdmin, self).get_urls()
         info = (self.model._meta.app_label,
@@ -43,6 +56,8 @@ class SessionAdmin(admin.ModelAdmin):
                 stats, output = backend.get_stats(obj)
                 if not stats:
                     raise Http404('No stats collected for this object')
+                if data['strip_dirs']:
+                    stats.strip_dirs()
                 if data['sort']:
                     stats.sort_stats(*data['sort'])
                 if data['reverse_sort']:
@@ -57,7 +72,7 @@ class SessionAdmin(admin.ModelAdmin):
         adminform = helpers.AdminForm(form,
                 [
                     (None, {'fields':[
-                        'sort','reverse_sort','restrictions','method']
+                        'sort','reverse_sort','strip_dirs', 'restrictions','method']
                         }),
                 ], {})
 

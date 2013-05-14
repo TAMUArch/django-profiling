@@ -24,6 +24,8 @@ class StatsForm(forms.Form):
             validators=[validate_sort])
     reverse_sort = forms.BooleanField(required=False,
             widget=forms.CheckboxInput)
+    strip_dirs = forms.BooleanField(required=False,
+            widget=forms.CheckboxInput)
     restrictions = forms.CharField(required=False, label='Output Restrictions',
             help_text='Enter output restrictions, one per line in the order '
                 'they should be applied as per '
@@ -41,7 +43,21 @@ class StatsForm(forms.Form):
 
     def clean_restrictions(self):
         if self.cleaned_data['restrictions']:
-            return [r.strip() for r in
+            values = [r.strip() for r in
                     self.cleaned_data['restrictions'].splitlines() if r]
+            output = []
+            for value in values:
+                try:
+                    output.append(int(value))
+                    continue
+                except:
+                    pass
+                try:
+                    output.append(float(value))
+                    continue
+                except:
+                    pass
+                output.append(value)
+            return output
         return []
 
