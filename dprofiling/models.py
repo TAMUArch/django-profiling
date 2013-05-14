@@ -15,7 +15,7 @@ log = getLogger('dprofiling.models')
 
 
 def upload_profile(instance, filename):
-    return '%s_%s_%s' % (instance.stats.site.pk, urlquote(instance.stats.path),
+    return '%s_%s_%s' % (instance.session.site.pk, urlquote(instance.session.path),
             time.time(),)
 
 class Session(models.Model):
@@ -28,6 +28,9 @@ class Session(models.Model):
 
     objects = models.Manager()
     on_site = CurrentSiteManager()
+
+    def __unicode__(self):
+        return self.name
 
 class Profile(models.Model):
     session = models.ForeignKey(Session, null=False, blank=False,
