@@ -1,0 +1,12 @@
+[
+    {
+        "model": "dprofiling.session",
+        "pk": 1,
+        "fields": {
+            "name": "Test Session 1",
+            "path": "/a/",
+            "site_id": 1,
+            "active": true
+        }
+    }
+]

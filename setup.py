@@ -18,7 +18,7 @@ setup(
     name = 'django-profiling',
     version = version,
     description = "Django Profiling",
-    long_description = LONG_DESCRIPTION 
+    long_description = LONG_DESCRIPTION,
     classifiers = [
         "Framework :: Django",
         "Development Status :: 3 - Alpha",

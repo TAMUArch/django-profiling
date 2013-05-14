@@ -5,15 +5,14 @@ from django.contrib.sites.models import get_current_site
 
 
 
-class DatabaseBackendTest(test.TestCase):
+class DatabaseBackendTestCase(test.TestCase):
     fixtures = ['dprofiling/test.json']
 
-    def setUp(self):
-        pass
-
-
-    
+    def test_false(self):
+        self.assertEquals(1,2)
 
 def suite():
+    loader = unittest.TestLoader()
     suite = unittest.TestSuite()
-    suite.addTest(DatabaseBackendTest)
+    suite.addTest(loader.loadTestsFromTestCase(DatabaseBackendTestCase))
+    return suite
