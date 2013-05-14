@@ -25,9 +25,11 @@ if isinstance(BACKEND, six.string_types):
 
     BACKEND = getattr(_module, _class)
 
-BACKEND = BACKEND(**getattr(settings,'PROFILING_BACKEND_OPTIONS', {}))
-
 class ProfilingRequestMiddleware(object):
+    def __init__(self, backend_class=BACKEND, *args, **kwags):
+        self.backend = backend_class(
+                **getattr(settings, 'PROFILING_BACKEND_OPTIONS',{}))
+
     def enabled(self, request):
         if hasattr(request, '_profiling_enabled'):
             return request._profiling_enabled
@@ -52,8 +54,10 @@ class ProfilingRequestMiddleware(object):
         if self.enabled(request):
             request._profile.disable()
             log.debug('Finished profiling of %s' % (request.path,))
-            BACKEND.store(request.path, request._profile)
+            self.backend.store(request.path, request._profile)
             log.debug('Profile information stored for %s' % (request.path,))
+            response.profile = request._profile
+            log.debug('Profile added to response')
 
         return response
 
