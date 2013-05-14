@@ -36,7 +36,7 @@ class Session(models.Model):
 
 class Profile(models.Model):
     session = models.ForeignKey(Session, null=False, blank=False,
-            db_index=True)
+            db_index=True, related_name='profiles')
     dump = models.FileField(null=False, blank=False, max_length=255,
             upload_to=getattr(settings, 'PROFILING_PROFILE_UPLOAD_TO', upload_profile),
             storage=getattr(settings, 'PROFILING_PROFILE_STORAGE', None))
