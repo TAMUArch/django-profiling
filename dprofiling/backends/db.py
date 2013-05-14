@@ -1,5 +1,5 @@
 from logging import getLogger
-from os import unlink
+from os import unlink, fdopen
 from tempfile import mkstemp
 
 from django.core.exceptions import MultipleObjectsReturned
@@ -24,16 +24,23 @@ class DatabaseBackend(object):
             log.exception('Error retrieving the profiling session object for %s' %
                     (path,))
         try:
-            temp = mkstemp(dir=self.tempdir)
-            log.debug('Temporary file created: %s' % (temp.name,))
-            profile.dump_stats(temp.name)
+            temp, path = mkstemp(dir=self.tempdir)
+            log.debug('Temporary file created: %s' % (path,))
+            temp = fdopen(temp)
+            profile.dump_stats(path)
             log.debug('Profile information dumped to temporary file')
             stored_profile = Profile(session=session, dump=File(temp))
             stored_profile.save()
             log.debug('Profile %d created' % (stored_profile.pk,))
+        except Exception as e:
+            log.exception('Exception while storing profile')
         finally:
-            if temp:
-                temp.close()
-                unlink(temp.name)
+            try:
+                if temp:
+                    temp.close()
+                    unlink(path)
+                    log.debug('Temporary file removed: %s' % (path,))
+            except:
+                log.exception('Error while removing a temporary file')
 
 
