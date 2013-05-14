@@ -24,7 +24,7 @@ class BaseTestCase(test.TestCase):
 
     def _check_profile(self, response):
         self.assertTrue(hasattr(response, 'profile'))
-        self.asserIsInstance(response.profile, Profile)
+        self.assertIsInstance(response.profile, Profile)
 
     def test_valid_session(self):
         """ Singe session for a path """
@@ -46,6 +46,26 @@ class BaseTestCase(test.TestCase):
         response = self.client.get('/c/')
         self._check_hello(response)
         self.assertFalse(hasattr(response, 'profile'))
+        return response
+
+    def test_exception_view(self):
+        """ Exception in view """
+        self.assertRaisesRegexp(Exception, 'Unhandled view exception',
+                self.client.get, '/d/')
+
+    def test_not_found(self):
+        """ View returns not found """
+        response = self.client.get('/e/')
+        self.assertEqual(response.status_code, 404)
+        self._check_profile(response)
+        return response
+
+    def test_redirect_profiled_url(self):
+        """ Redirect from a profiled url """
+        response = self.client.get("/f/")
+        self.assertEqual(response.status_code, 301)
+        self._check_profile(response)
+        return response
 
 
 def suite():
