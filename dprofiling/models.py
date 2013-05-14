@@ -11,11 +11,13 @@ from django.utils.http import urlquote
 
 
 
+
 log = getLogger('dprofiling.models')
 
 
 def upload_profile(instance, filename):
-    return '%s_%s_%s' % (instance.session.site.pk, urlquote(instance.session.path),
+    return '%s/%s/%s' % (instance.session.site.pk,
+            urlquote(instance.session.path.replace('/','_')).strip('_'),
             time.time(),)
 
 class Session(models.Model):
@@ -39,3 +41,4 @@ class Profile(models.Model):
             upload_to=getattr(settings, 'PROFILING_PROFILE_UPLOAD_TO', upload_profile),
             storage=getattr(settings, 'PROFILING_PROFILE_STORAGE', None))
 
+from dprofiling import signals
