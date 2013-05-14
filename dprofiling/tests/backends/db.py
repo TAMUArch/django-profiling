@@ -1,13 +1,17 @@
 import unittest
+from pstats import Stats
 
 from django import test
 from django.contrib.sites.models import get_current_site
+from django.test.utils import override_settings
 
+from dprofiling.backends import get_backend
 from dprofiling.models import Session, Profile
 from dprofiling.tests import BaseTestCase
 
 
 
+@override_settings(PROFILING_BACKEND='dprofiling.backends.db.DatabaseBackend')
 class DatabaseBackendTestCase(BaseTestCase):
     def _check_profile_created(self, response):
         session = Session.on_site.get(path=response.request['PATH_INFO'], active=True)
@@ -36,6 +40,19 @@ class DatabaseBackendTestCase(BaseTestCase):
         response = super(DatabaseBackendTestCase, self).test_not_found()
         self._check_profile_created(response)
         return response
+
+    def test_combine_stats(self):
+        """ Combining multiple profiles """
+        self.client.get('/a/')
+        self.client.get('/a/')
+        backend = get_backend()
+        stats, output = backend.get_stats(Session.on_site.get(path='/a/',active=True))
+        self.assertIsInstance(stats, Stats)
+        stats.print_stats()
+        self.assertIn('HelloWorld', output.getvalue())
+
+
+
 
 
 def suite():
