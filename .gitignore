@@ -1,0 +1,14 @@
+/.project
+/.pydevproject
+/.settings
+.DS_Store
+*.pyc
+/parts
+/eggs
+/bin
+/downloads
+/develop-eggs
+/src
+/var
+/.installed.cfg
+/.mr.developer.cfg
