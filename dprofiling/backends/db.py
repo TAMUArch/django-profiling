@@ -50,13 +50,13 @@ class DatabaseBackend(object):
 
     def get_stats(self, session):
         output = StringIO()
-        stats = Stats(stream=output)
+        stats = None
         temp_files = []
         try:
             for profile in session.profiles.all():
                 if profile.dump.path:
                     log.debug('Adding local profile dump')
-                    stats.add(profile.dump.path)
+                    path = profile.dump.path
                 else:
                     log.debug('Creating a temporary file for remote profile dump')
                     temp, path = mkstemp(dir=self.tempdir)
@@ -65,6 +65,11 @@ class DatabaseBackend(object):
                     log.debug('Copying content from remote dump to tempfile')
                     temp.write(profile.dump.read())
                     log.debug('Adding tempfile profile dump')
+                if stats is None:
+                    log.debug('Creating a Stats object')
+                    stats = Stats(path, stream=output)
+                else:
+                    log.debug('Appending to existing Stats object')
                     stats.add(path)
         finally:
             for temp, path in temp_files:
@@ -72,7 +77,7 @@ class DatabaseBackend(object):
                 temp.close()
                 unlink(path)
 
-        return output, stats
+        return stats, output
 
 
 
