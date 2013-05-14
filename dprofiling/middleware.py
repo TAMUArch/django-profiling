@@ -1,4 +1,3 @@
-from importlib import import_module
 from logging import getLogger
 try:
     from cProfile import Profile
@@ -6,29 +5,17 @@ except ImportError:
     from Profile import Profile
 
 from django.conf import settings
-from django.core.exceptions import MultipleObjectsReturned
-from django.utils import six
 
-
+from dprofiling.backends import get_backend
 from dprofiling.models import Session
+
 
 
 log = getLogger('dprofiling.middleware')
 
-
-
-BACKEND = getattr(settings, 'PROFILING_BACKEND',
-    'dprofiling.backends.db.DatabaseBackend')
-if isinstance(BACKEND, six.string_types):
-    _module, _class = BACKEND.rsplit('.', 1)
-    _module = import_module(_module)
-
-    BACKEND = getattr(_module, _class)
-
 class ProfilingRequestMiddleware(object):
-    def __init__(self, backend_class=BACKEND, *args, **kwags):
-        self.backend = backend_class(
-                **getattr(settings, 'PROFILING_BACKEND_OPTIONS',{}))
+    def __init__(self, backend=get_backend(), *args, **kwags):
+        self.backend = backend
 
     def enabled(self, request):
         if hasattr(request, '_profiling_enabled'):
