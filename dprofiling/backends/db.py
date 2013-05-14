@@ -1,6 +1,12 @@
 from logging import getLogger
 from os import unlink, fdopen
+from pstats import Stats
 from tempfile import mkstemp
+
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
 
 from django.core.files import File
 
@@ -41,5 +47,32 @@ class DatabaseBackend(object):
                     log.debug('Temporary file removed: %s' % (path,))
             except:
                 log.exception('Error while removing a temporary file')
+
+    def get_stats(self, session):
+        output = StringIO()
+        stats = Stats(stream=output)
+        temp_files = []
+        try:
+            for profile in session.profiles.all():
+                if profile.dump.path:
+                    log.debug('Adding local profile dump')
+                    stats.add(profile.dump.path)
+                else:
+                    log.debug('Creating a temporary file for remote profile dump')
+                    temp, path = mkstemp(dir=self.tempdir)
+                    temp = fdopen(temp)
+                    temp_files.append((temp, path))
+                    log.debug('Copying content from remote dump to tempfile')
+                    temp.write(profile.dump.read())
+                    log.debug('Adding tempfile profile dump')
+                    stats.add(path)
+        finally:
+            for temp, path in temp_files:
+                log.debug('Removing temporary file at %s' % (path,))
+                temp.close()
+                unlink(path)
+
+        return output, stats
+
 
 
