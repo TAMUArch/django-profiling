@@ -2,7 +2,6 @@ from logging import getLogger
 from os import unlink, fdopen
 from tempfile import mkstemp
 
-from django.core.exceptions import MultipleObjectsReturned
 from django.core.files import File
 
 from dprofiling.models import Session, Profile
@@ -20,7 +19,7 @@ class DatabaseBackend(object):
         temp = None
         try:
             session = Session.on_site.get(path=path, active=True)
-        except (Session.DoesNotExist, MultipleObjectsReturned) as e:
+        except (Session.DoesNotExist, Session.MultipleObjectsReturned) as e:
             log.exception('Error retrieving the profiling session object for %s' %
                     (path,))
         try:
