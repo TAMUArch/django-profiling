@@ -15,6 +15,10 @@ class DatabaseBackendTestCase(BaseTestCase):
         self.assertEqual(qs.count(), 1)
         qs.delete()
 
+    def tearDown(self):
+        super(DatabaseBackendTestCase, self).tearDown()
+        Profile.objects.all().delete()
+
     def test_valid_session(self):
         """ Single session for a path """
         response = super(DatabaseBackendTestCase, self).test_valid_session()
