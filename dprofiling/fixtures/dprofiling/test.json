@@ -8,5 +8,75 @@
             "site_id": 1,
             "active": true
         }
-    }
+    },
+    {
+        "model": "dprofiling.session",
+        "pk": 2,
+        "fields": {
+            "name": "Test Session 2",
+            "path": "/b/",
+            "site_id": 1,
+            "active": false
+        }
+    },
+    {
+        "model": "dprofiling.session",
+        "pk": 3,
+        "fields": {
+            "name": "Test Session 3",
+            "path": "/b/",
+            "site_id": 1,
+            "active": true
+        }
+    },
+    {
+        "model": "dprofiling.session",
+        "pk": 4,
+        "fields": {
+            "name": "Test Session 4",
+            "path": "/c/",
+            "site_id": 1,
+            "active": true
+        }
+    },
+    {
+        "model": "dprofiling.session",
+        "pk": 5,
+        "fields": {
+            "name": "Test Session 5",
+            "path": "/c/",
+            "site_id": 1,
+            "active": true
+        }
+    },
+    {
+        "model": "dprofiling.session",
+        "pk": 6,
+        "fields": {
+            "name": "Test Session 6",
+            "path": "/d/",
+            "site_id": 1,
+            "active": true
+        }
+    },
+    {
+        "model": "dprofiling.session",
+        "pk": 7,
+        "fields": {
+            "name": "Test Session 7",
+            "path": "/e/",
+            "site_id": 1,
+            "active": true
+        }
+    },
+    {
+        "model": "dprofiling.session",
+        "pk": 8,
+        "fields": {
+            "name": "Test Session 8",
+            "path": "/f/",
+            "site_id": 1,
+            "active": true
+        }
+    },
 ]
