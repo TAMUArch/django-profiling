@@ -6,6 +6,9 @@ from os.path import dirname, join
 
 
 
+DEBUG = True
+TEMPLATE_DEBUG = True
+
 PROJECT_ROOT = dirname(__file__)
 BUILDOUT_ROOT = dirname(PROJECT_ROOT)
 
@@ -35,9 +38,7 @@ STATIC_URL = '/static/'
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
 # Additional locations of static files
-STATICFILES_DIRS = (
-    join(PROJECT_ROOT, 'static')
-)
+STATICFILES_DIRS = ()
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -53,6 +54,7 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'dprofiling.middleware.ProfilingRequestMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -91,6 +93,11 @@ LOGGING = {
             'class': 'logging.StreamHandler',
         },
     },
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+    },
     'loggers': {
         'django.request': {
             'handlers': ['mail_admins'],
@@ -106,6 +113,7 @@ LOGGING = {
     'root': {
         'level': 'WARNING',
         'handlers': ['console'],
+        'formatter': 'verbose'
     },
 }
 
