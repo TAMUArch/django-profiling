@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 
 
-version = '0.1a1'
+version = '0.1'
 
 README = join(dirname(__file__), 'README.md')
 HISTORY = join(dirname(__file__), 'HISTORY.md')
@@ -21,8 +21,7 @@ setup(
     long_description = LONG_DESCRIPTION,
     classifiers = [
         "Framework :: Django",
-        "Development Status :: 3 - Alpha",
-        #"Development Status :: 4 - Beta",
+        "Development Status :: 4 - Beta",
         #"Development Status :: 5 - Production/Stable",
         "Programming Language :: Python",
         "Topic :: Software Development :: Libraries :: Python Modules",
