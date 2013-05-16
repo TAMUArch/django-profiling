@@ -6,13 +6,13 @@ from setuptools import setup, find_packages
 
 version = '0.1'
 
-README = join(dirname(__file__), 'README.md')
-HISTORY = join(dirname(__file__), 'HISTORY.md')
+README = join(dirname(__file__), 'README.rst')
+HISTORY = join(dirname(__file__), 'HISTORY.rst')
 LICENSE = join(dirname(__file__), 'LICENSE')
 
 LONG_DESCRIPTION = open(README).read() + '\n\n' + \
-        open(HISTORY).read() + '\n\n' + \
-        '\n'.join(['> '+ line for line in open(LICENSE).readlines()])
+        open(HISTORY).read() + '\n\n::\n' + \
+        ''.join(['  '+ line for line in open(LICENSE).readlines()])
 
 setup(
     name = 'django-profiling',
